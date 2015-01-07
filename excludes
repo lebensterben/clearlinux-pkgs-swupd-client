@@ -1,0 +1,7 @@
+#
+# This file contains the output files that need %exclude.
+# Full path names, one per line.
+#
+/usr/lib/systemd/system/check-update.service
+/usr/lib/systemd/system/check-update.timer
+/usr/lib/systemd/system/multi-user.target.wants/check-update.timer

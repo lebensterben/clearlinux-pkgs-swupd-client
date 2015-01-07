@@ -1,0 +1,11 @@
+[Unit]
+Description=Automatically Install Software Updates
+Documentation=man:swupd_update
+
+[Timer]
+OnBootSec=1d
+OnUnitActiveSec=1d
+AccuracySec=1h
+
+[Install]
+WantedBy=multi-user.target
