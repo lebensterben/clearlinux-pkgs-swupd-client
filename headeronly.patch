@@ -25,7 +25,7 @@ index d8e3466..092db13 100644
  			if (retries < MAX_TRIES) {
  				increment_retries(&retries, &timeout);
 diff --git a/src/manifest.c b/src/manifest.c
-index 2b4efa3..be4a84d 100644
+index 2b4efa3..7f53e09 100644
 --- a/src/manifest.c
 +++ b/src/manifest.c
 @@ -162,7 +162,7 @@ static struct manifest *alloc_manifest(int version, char *component)
@@ -37,6 +37,15 @@ index 2b4efa3..be4a84d 100644
  {
  	FILE *infile;
  	char line[MANIFEST_LINE_MAXLEN], *c, *c2;
+@@ -177,7 +177,7 @@ static struct manifest *manifest_from_file(int version, char *component)
+ 
+ 	string_or_die(&filename, "%s/%i/Manifest.%s", state_dir, version, component);
+ 
+-	infile = fopen(filename, "rb");
++	infile = fopen(filename, "rbm");
+ 	if (infile == NULL) {
+ 		free(filename);
+ 		return NULL;
 @@ -249,6 +249,11 @@ static struct manifest *manifest_from_file(int version, char *component)
  	manifest->contentsize = contentsize;
  	manifest->manifest_version = manifest_enc_version;
@@ -67,7 +76,14 @@ index 2b4efa3..be4a84d 100644
  {
  	struct manifest *manifest = NULL;
  	int ret = 0;
-@@ -637,7 +642,7 @@ struct manifest *load_manifest(int current, int version, struct file *file, stru
+@@ -632,12 +637,13 @@ struct manifest *load_manifest(int current, int version, struct file *file, stru
+ 		return NULL;
+ 	}
+ 
+-	ret = verify_bundle_hash(mom, file);
++	if (!header_only)
++		ret = verify_bundle_hash(mom, file);
+ 	if (ret != 0) {
  		return NULL;
  	}
  
@@ -76,7 +92,7 @@ index 2b4efa3..be4a84d 100644
  
  	if (manifest == NULL) {
  		printf("Failed to load %d %s manifest\n", version, file->filename);
-@@ -838,7 +843,7 @@ struct list *recurse_manifest(struct manifest *manifest, const char *component)
+@@ -838,7 +844,7 @@ struct list *recurse_manifest(struct manifest *manifest, const char *component)
  			version1 = version2;
  		}
  
