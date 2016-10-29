@@ -31,6 +31,7 @@ Patch2: count-nonpack.patch
 Patch3: fix-verify-bug.patch
 Patch4: recursion.patch
 Patch5: headeronly.patch
+Patch6: print.patch
 
 %description
 The swupd-client package provides a reference implementation of a software
@@ -102,6 +103,7 @@ lib components for the swupd-client package.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 
 %build
 export LANG=C
