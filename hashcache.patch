@@ -1,0 +1,57 @@
+diff --git a/src/hash.c b/src/hash.c
+index 6edc37b..df92043 100644
+--- a/src/hash.c
++++ b/src/hash.c
+@@ -262,8 +262,9 @@ int verify_bundle_hash(struct manifest *manifest, struct file *bundle)
+ {
+ 	struct list *iter = list_head(manifest->manifests);
+ 	struct file *current;
+-	char *local = NULL;
++	char *local = NULL, *cached;
+ 	int ret = 0;
++	FILE *f;
+ 
+ 	while (iter) {
+ 		struct stat sb;
+@@ -274,6 +275,14 @@ int verify_bundle_hash(struct manifest *manifest, struct file *bundle)
+ 		if (strcmp(current->filename, bundle->filename) != 0) {
+ 			continue;
+ 		}
++		
++		string_or_die(&cached, "%s/%i/hash.ok.Manifest.%s", state_dir,
++			      current->last_change, current->filename);
++			      
++		if (access(cached, R_OK) == 0) {
++			ret = 0;
++			break;
++		} 
+ 
+ 		string_or_die(&local, "%s/%i/Manifest.%s", state_dir,
+ 			      current->last_change, current->filename);
+@@ -323,6 +332,12 @@ int verify_bundle_hash(struct manifest *manifest, struct file *bundle)
+ 			unlink(local);
+ 			ret = 1;
+ 		}
++		f = fopen(cached, "w");
++		if (f) {
++			fprintf(f, "hash checked ok\n");
++			fclose(f);
++		}
++		free(cached);
+ 		break;
+ 	}
+ 
+diff --git a/src/manifest.c b/src/manifest.c
+index 7f53e09..a5e2735 100644
+--- a/src/manifest.c
++++ b/src/manifest.c
+@@ -637,8 +637,7 @@ struct manifest *load_manifest(int current, int version, struct file *file, stru
+ 		return NULL;
+ 	}
+ 
+-	if (!header_only)
+-		ret = verify_bundle_hash(mom, file);
++	ret = verify_bundle_hash(mom, file);
+ 	if (ret != 0) {
+ 		return NULL;
+ 	}
