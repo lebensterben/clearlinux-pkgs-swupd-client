@@ -1,0 +1,23 @@
+diff --git a/src/version.c b/src/version.c
+index 5d5f88d..1d41aac 100644
+--- a/src/version.c
++++ b/src/version.c
+@@ -40,6 +40,10 @@ int get_latest_version(void)
+ 	char *path = NULL;
+ 	int ret = 0;
+ 	struct version_container tmp_version = { 0 };
++	static int cached_version = -1;
++	
++	if (cached_version > 0)
++		return cached_version;
+ 
+ 	tmp_version.version = calloc(LINE_MAX, 1);
+ 	if (tmp_version.version == NULL) {
+@@ -63,6 +67,7 @@ out:
+ 	free(path);
+ 	free(url);
+ 	free(tmp_version.version);
++	cached_version = ret;
+ 	return ret;
+ }
+ 
