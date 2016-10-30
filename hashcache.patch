@@ -55,3 +55,78 @@ index 7f53e09..a5e2735 100644
  	if (ret != 0) {
  		return NULL;
  	}
+diff --git a/src/hash.c b/src/hash.c
+index df92043..e6f0578 100644
+--- a/src/hash.c
++++ b/src/hash.c
+@@ -264,10 +264,9 @@ int verify_bundle_hash(struct manifest *manifest, struct file *bundle)
+ 	struct file *current;
+ 	char *local = NULL, *cached;
+ 	int ret = 0;
+-	FILE *f;
+ 
+ 	while (iter) {
+-		struct stat sb;
++		struct stat sb, sb2;
+ 
+ 		current = iter->data;
+ 		iter = iter->next;
+@@ -276,16 +275,18 @@ int verify_bundle_hash(struct manifest *manifest, struct file *bundle)
+ 			continue;
+ 		}
+ 		
+-		string_or_die(&cached, "%s/%i/hash.ok.Manifest.%s", state_dir,
+-			      current->last_change, current->filename);
++		string_or_die(&cached, "%s/%i/Manifest.%s.%s", state_dir,
++			      current->last_change, current->filename, bundle->hash);
+ 			      
+-		if (access(cached, R_OK) == 0) {
+-			ret = 0;
+-			break;
+-		} 
+-
+ 		string_or_die(&local, "%s/%i/Manifest.%s", state_dir,
+ 			      current->last_change, current->filename);
++			      
++		if (stat(local, &sb) == 0 && stat(cached, &sb2) == 0 && sb.st_ino == sb2.st_ino) {
++			free(cached);
++			break;
++		} else {
++			unlink(cached);
++		}
+ 
+ 		if (stat(local, &sb) != 0) {
+ 			/* missing bundle manifest - attempt to download it */
+@@ -332,10 +333,8 @@ int verify_bundle_hash(struct manifest *manifest, struct file *bundle)
+ 			unlink(local);
+ 			ret = 1;
+ 		}
+-		f = fopen(cached, "w");
+-		if (f) {
+-			fprintf(f, "hash checked ok\n");
+-			fclose(f);
++		if (link(local, cached) != 0) {
++			unlink(cached);
+ 		}
+ 		free(cached);
+ 		break;
+diff --git a/src/update.c b/src/update.c
+index 63fecef..e1afd27 100644
+--- a/src/update.c
++++ b/src/update.c
+@@ -269,7 +269,6 @@ load_current_manifests:
+ 	/* Step 3: setup manifests */
+ 
+ 	/* get the from/to MoM manifests */
+-	printf("Querying current manifest.\n");
+ 	current_manifest = load_mom(current_version);
+ 	if (!current_manifest) {
+ 		/* TODO: possibly remove this as not getting a "from" manifest is not fatal
+@@ -288,7 +287,6 @@ load_current_manifests:
+ 	timeout = 10;
+ 
+ load_server_manifests:
+-	printf("Querying server manifest.\n");
+ 
+ 	server_manifest = load_mom(server_version);
+ 	if (!server_manifest) {
