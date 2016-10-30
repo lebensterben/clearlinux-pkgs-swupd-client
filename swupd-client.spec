@@ -4,7 +4,7 @@
 #
 Name     : swupd-client
 Version  : 3.6.6
-Release  : 147
+Release  : 148
 URL      : https://github.com/clearlinux/swupd-client/releases/download/v3.6.6/swupd-client-3.6.6.tar.gz
 Source0  : https://github.com/clearlinux/swupd-client/releases/download/v3.6.6/swupd-client-3.6.6.tar.gz
 Source1  : swupd-client.tmpfiles
@@ -32,6 +32,7 @@ Patch3: fix-verify-bug.patch
 Patch4: recursion.patch
 Patch5: headeronly.patch
 Patch6: print.patch
+Patch7: nosync.patch
 
 %description
 The swupd-client package provides a reference implementation of a software
@@ -104,6 +105,7 @@ lib components for the swupd-client package.
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 
 %build
 export LANG=C
