@@ -1,0 +1,102 @@
+diff --git a/include/swupd.h b/include/swupd.h
+index b4238e6..abb7798 100644
+--- a/include/swupd.h
++++ b/include/swupd.h
+@@ -86,6 +86,7 @@ struct update_stat {
+ 
+ struct file {
+ 	char *filename;
++	uint64_t fn_hash;
+ 	char hash[SWUPD_HASH_LEN];
+ 	bool use_xattrs;
+ 	int last_change;
+@@ -160,6 +161,7 @@ extern bool ignore(struct file *file);
+ extern void apply_heuristics(struct file *file);
+ 
+ extern int file_sort_filename(const void *a, const void *b);
++extern int file_sort_filename_hash(const void *a, const void *b);
+ extern int file_sort_filename_reverse(const void *a, const void *b);
+ extern struct manifest *load_mom(int version);
+ extern struct manifest *load_manifest(int current, int version, struct file *file, struct manifest *mom, int header_only);
+diff --git a/src/manifest.c b/src/manifest.c
+index a5e2735..525f9c7 100644
+--- a/src/manifest.c
++++ b/src/manifest.c
+@@ -76,6 +76,32 @@ int file_sort_filename(const void *a, const void *b)
+ 	return 0;
+ }
+ 
++int file_sort_filename_hash(const void *a, const void *b)
++{
++	struct file *A, *B;
++	int ret;
++	A = (struct file *)a;
++	B = (struct file *)b;
++	
++	if (A->fn_hash > B->fn_hash)
++		return 1;
++	if (A->fn_hash < B->fn_hash)
++		return -1;
++
++	ret = strcmp(A->filename, B->filename);
++	if (ret) {
++		return ret;
++	}
++	if (A->is_deleted > B->is_deleted) {
++		return 1;
++	}
++	if (A->is_deleted < B->is_deleted) {
++		return -1;
++	}
++
++	return 0;
++}
++
+ int file_sort_filename_reverse(const void *a, const void *b)
+ {
+ 	struct file *A, *B;
+@@ -355,8 +381,12 @@ static struct manifest *manifest_from_file(int version, char *component, int hea
+ 		file->filename = strdup(c);
+ 		if (!file->filename) {
+ 			abort();
++			#warning SWUPD SHALL NOT EXIT
++		}
++		while (*c) {
++			file->fn_hash = (file->fn_hash << 1) + *c;
++			c++;
+ 		}
+-
+ 		if (file->is_manifest) {
+ 			manifest->manifests = list_prepend_data(manifest->manifests, file);
+ 		} else {
+@@ -709,8 +739,8 @@ void link_manifests(struct manifest *m1, struct manifest *m2)
+ 	struct list *list1, *list2;
+ 	struct file *file1, *file2;
+ 
+-	m1->files = list_sort(m1->files, file_sort_filename);
+-	m2->files = list_sort(m2->files, file_sort_filename);
++	m1->files = list_sort(m1->files, file_sort_filename_hash);
++	m2->files = list_sort(m2->files, file_sort_filename_hash);
+ 
+ 	list1 = list_head(m1->files);
+ 	list2 = list_head(m2->files);
+@@ -771,8 +801,8 @@ void link_submanifests(struct manifest *m1, struct manifest *m2)
+ 	struct list *list1, *list2;
+ 	struct file *file1, *file2;
+ 
+-	m1->manifests = list_sort(m1->manifests, file_sort_filename);
+-	m2->manifests = list_sort(m2->manifests, file_sort_filename);
++	m1->manifests = list_sort(m1->manifests, file_sort_filename_hash);
++	m2->manifests = list_sort(m2->manifests, file_sort_filename_hash);
+ 
+ 	list1 = list_head(m1->manifests);
+ 	list2 = list_head(m2->manifests);
+@@ -861,7 +891,7 @@ struct list *consolidate_files(struct list *files)
+ 	struct list *list, *next, *tmp;
+ 	struct file *file1, *file2;
+ 
+-	files = list_sort(files, file_sort_filename);
++	files = list_sort(files, file_sort_filename_hash);
+ 
+ 	/* Two pointers ("list" and "next") traverse the consolidated, filename sorted
+ 	 * struct list of files.  The "list" pointer is marched forward through the
