@@ -62,7 +62,7 @@ index a5e2735..525f9c7 100644
 +			#warning SWUPD SHALL NOT EXIT
 +		}
 +		while (*c) {
-+			file->fn_hash = (file->fn_hash << 1) + *c;
++			file->fn_hash = (file->fn_hash << 1) + *c * 0x5001;
 +			c++;
  		}
 -
