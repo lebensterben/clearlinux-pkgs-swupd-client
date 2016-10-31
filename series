@@ -7,3 +7,4 @@ print.patch
 nosync.patch
 cache-version.patch
 hashcache.patch
+linked.patch

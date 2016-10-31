@@ -1,0 +1,39 @@
+commit 91acc3e6f577febae6db064bdb9de29cf415aa91
+Author: Arjan van de Ven <arjan@linux.intel.com>
+Date:   Mon Oct 31 09:48:57 2016 +0000
+
+    Fix serious bug in list sorting
+    
+    we can't sort the update list inside a helper function
+    that only gets a pointer to the list; the list head can get
+    updated as part of the sort, and this update to the list
+    head doesn't get reflected in the caller, leading
+    to a corrupted linked list.
+
+diff --git a/src/update.c b/src/update.c
+index e1afd27..0636cfb 100644
+--- a/src/update.c
++++ b/src/update.c
+@@ -48,9 +48,6 @@ static void try_delta_loop(struct list *updates)
+ 	struct list *iter;
+ 	struct file *file;
+ 
+-	/* need update list in filename order to insure directories are
+-	 * created before their contents */
+-	updates = list_sort(updates, file_sort_filename);
+ 
+ 	iter = list_head(updates);
+ 	while (iter) {
+@@ -376,6 +373,12 @@ download_packs:
+ 	print_statistics(current_version, server_version);
+ 
+ 	/* Step 7: apply the update */
++	
++	/* 
++	 * need update list in filename order to insure directories are
++	 * created before their contents 
++	 */
++	updates = list_sort(updates, file_sort_filename);
+ 
+ 	ret = update_loop(updates, server_manifest);
+ 	if (ret == 0) {
