@@ -4,7 +4,7 @@
 #
 Name     : swupd-client
 Version  : 3.6.6
-Release  : 159
+Release  : 160
 URL      : https://github.com/clearlinux/swupd-client/releases/download/v3.6.6/swupd-client-3.6.6.tar.gz
 Source0  : https://github.com/clearlinux/swupd-client/releases/download/v3.6.6/swupd-client-3.6.6.tar.gz
 Source1  : swupd-client.tmpfiles
@@ -127,7 +127,7 @@ export CFLAGS="$CFLAGS -O3 -falign-functions=32 -flto -fno-semantic-interpositio
 export FCFLAGS="$CFLAGS -O3 -falign-functions=32 -flto -fno-semantic-interposition "
 export FFLAGS="$CFLAGS -O3 -falign-functions=32 -flto -fno-semantic-interposition "
 export CXXFLAGS="$CXXFLAGS -O3 -falign-functions=32 -flto -fno-semantic-interposition "
-%configure --disable-static --disable-tests --enable-signature-verification --with-contenturl=https://download.clearlinux.org/update --with-versionurl=https://download.clearlinux.org/update --with-formatid=7
+%configure --disable-static --disable-tests --enable-signature-verification --with-contenturl=https://cdn.download.clearlinux.org/update --with-versionurl=https://download.clearlinux.org/update --with-formatid=7
 make V=1  %{?_smp_mflags}
 
 %check
