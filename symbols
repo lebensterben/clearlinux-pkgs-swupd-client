@@ -20,7 +20,6 @@ libswupd.so.2:download_subscribed_packs
 libswupd.so.2:dump_file_descriptor_leaks
 libswupd.so.2:end_full_download
 libswupd.so.2:file_sort_filename
-libswupd.so.2:file_sort_filename_hash
 libswupd.so.2:file_sort_filename_reverse
 libswupd.so.2:files_from_bundles
 libswupd.so.2:free_bundle
