@@ -10,3 +10,4 @@ hashcache.patch
 linked.patch
 fasthash.patch
 unverbose.patch
+silent.patch
