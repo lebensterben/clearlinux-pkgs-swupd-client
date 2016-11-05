@@ -84,10 +84,10 @@ libswupd.so.2:set_format_string
 libswupd.so.2:set_local_download
 libswupd.so.2:set_path_prefix
 libswupd.so.2:set_state_dir
+libswupd.so.2:set_subscription_versions
 libswupd.so.2:set_version_url
 libswupd.so.2:start_full_download
 libswupd.so.2:string_or_die
-libswupd.so.2:subscription_versions_from_MoM
 libswupd.so.2:swupd_curl_cleanup
 libswupd.so.2:swupd_curl_get_file
 libswupd.so.2:swupd_curl_init

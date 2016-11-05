@@ -1,13 +1,1 @@
-http2.patch
-count-nonpack.patch
-fix-verify-bug.patch
-recursion.patch
-headeronly.patch
-print.patch
-nosync.patch
-cache-version.patch
-hashcache.patch
-linked.patch
-unverbose.patch
-silent.patch
 nopin.patch

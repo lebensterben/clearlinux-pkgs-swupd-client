@@ -2,3 +2,4 @@ libbsdiff.so.1
 libc.so.6
 libcrypto.so.1.0.0
 libcurl.so.4
+libpthread.so.0
