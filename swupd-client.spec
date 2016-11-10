@@ -4,7 +4,7 @@
 #
 Name     : swupd-client
 Version  : 3.7.0
-Release  : 161
+Release  : 162
 URL      : https://github.com/clearlinux/swupd-client/releases/download/v3.7.0/swupd-client-3.7.0.tar.gz
 Source0  : https://github.com/clearlinux/swupd-client/releases/download/v3.7.0/swupd-client-3.7.0.tar.gz
 Source1  : swupd-client.tmpfiles
@@ -72,14 +72,6 @@ Provides: swupd-client-devel
 dev components for the swupd-client package.
 
 
-%package extras
-Summary: extras components for the swupd-client package.
-Group: Default
-
-%description extras
-extras components for the swupd-client package.
-
-
 %package lib
 Summary: lib components for the swupd-client package.
 Group: Libraries
@@ -99,10 +91,10 @@ export LANG=C
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
-export CFLAGS="$CFLAGS -fno-semantic-interposition -O3 -falign-functions=32 "
-export FCFLAGS="$CFLAGS -fno-semantic-interposition -O3 -falign-functions=32 "
-export FFLAGS="$CFLAGS -fno-semantic-interposition -O3 -falign-functions=32 "
-export CXXFLAGS="$CXXFLAGS -fno-semantic-interposition -O3 -falign-functions=32 "
+export CFLAGS="$CFLAGS -O3 -falign-functions=32 -flto -fno-semantic-interposition "
+export FCFLAGS="$CFLAGS -O3 -falign-functions=32 -flto -fno-semantic-interposition "
+export FFLAGS="$CFLAGS -O3 -falign-functions=32 -flto -fno-semantic-interposition "
+export CXXFLAGS="$CXXFLAGS -O3 -falign-functions=32 -flto -fno-semantic-interposition "
 %configure --disable-static --disable-tests --enable-signature-verification --with-contenturl=https://cdn.download.clearlinux.org/update --with-versionurl=https://download.clearlinux.org/update --with-formatid=7
 make V=1  %{?_smp_mflags}
 
@@ -140,7 +132,7 @@ ln -sf ../swupd-update.timer %{buildroot}/usr/lib/systemd/system/multi-user.targ
 %exclude /usr/lib/systemd/system/check-update.service
 %exclude /usr/lib/systemd/system/check-update.timer
 %exclude /usr/lib/systemd/system/multi-user.target.wants/check-update.timer
-%exclude /usr/lib/systemd/system/multi-user.target.wants/swupd-update.timer
+/usr/lib/systemd/system/multi-user.target.wants/swupd-update.timer
 /usr/lib/systemd/system/swupd-update.service
 /usr/lib/systemd/system/swupd-update.timer
 /usr/lib/tmpfiles.d/swupd-client.conf
@@ -158,10 +150,6 @@ ln -sf ../swupd-update.timer %{buildroot}/usr/lib/systemd/system/multi-user.targ
 %files dev
 %defattr(-,root,root,-)
 /usr/lib64/*.so
-
-%files extras
-%defattr(-,root,root,-)
-/usr/lib/systemd/system/multi-user.target.wants/swupd-update.timer
 
 %files lib
 %defattr(-,root,root,-)
