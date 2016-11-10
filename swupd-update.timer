@@ -3,9 +3,10 @@ Description=Automatically Install Software Updates
 Documentation=man:swupd_update
 
 [Timer]
-OnBootSec=1d
-OnUnitActiveSec=1d
-AccuracySec=1h
+OnBootSec=6h
+OnUnitActiveSec=6h
+AccuracySec=900
+RandomizedDelaySec=7200
 
 [Install]
 WantedBy=multi-user.target
