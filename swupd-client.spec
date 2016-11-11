@@ -4,7 +4,7 @@
 #
 Name     : swupd-client
 Version  : 3.7.1
-Release  : 165
+Release  : 166
 URL      : https://github.com/clearlinux/swupd-client/releases/download/v3.7.1/swupd-client-3.7.1.tar.gz
 Source0  : https://github.com/clearlinux/swupd-client/releases/download/v3.7.1/swupd-client-3.7.1.tar.gz
 Source1  : swupd-client.tmpfiles
@@ -72,6 +72,14 @@ Provides: swupd-client-devel
 dev components for the swupd-client package.
 
 
+%package extras
+Summary: extras components for the swupd-client package.
+Group: Default
+
+%description extras
+extras components for the swupd-client package.
+
+
 %package lib
 Summary: lib components for the swupd-client package.
 Group: Libraries
@@ -132,7 +140,7 @@ ln -sf ../swupd-update.timer %{buildroot}/usr/lib/systemd/system/multi-user.targ
 %exclude /usr/lib/systemd/system/check-update.service
 %exclude /usr/lib/systemd/system/check-update.timer
 %exclude /usr/lib/systemd/system/multi-user.target.wants/check-update.timer
-/usr/lib/systemd/system/multi-user.target.wants/swupd-update.timer
+%exclude /usr/lib/systemd/system/multi-user.target.wants/swupd-update.timer
 /usr/lib/systemd/system/swupd-update.service
 /usr/lib/systemd/system/swupd-update.timer
 /usr/lib/tmpfiles.d/swupd-client.conf
@@ -150,6 +158,10 @@ ln -sf ../swupd-update.timer %{buildroot}/usr/lib/systemd/system/multi-user.targ
 %files dev
 %defattr(-,root,root,-)
 /usr/lib64/*.so
+
+%files extras
+%defattr(-,root,root,-)
+/usr/lib/systemd/system/multi-user.target.wants/swupd-update.timer
 
 %files lib
 %defattr(-,root,root,-)
