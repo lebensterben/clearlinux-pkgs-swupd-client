@@ -1,1 +1,5 @@
---disable-tests --enable-signature-verification --with-contenturl=https://cdn.download.clearlinux.org/update --with-versionurl=https://download.clearlinux.org/update --with-formatid=7
+--disable-tests
+--enable-signature-verification
+--with-contenturl=https://cdn.download.clearlinux.org/update
+--with-versionurl=https://download.clearlinux.org/update
+--with-formatid=7
