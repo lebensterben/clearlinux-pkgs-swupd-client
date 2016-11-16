@@ -96,7 +96,8 @@ libswupd.so.2:swupd_curl_set_current_version
 libswupd.so.2:swupd_curl_set_requested_version
 libswupd.so.2:swupd_curl_test_resume
 libswupd.so.2:swupd_deinit
-libswupd.so.2:swupd_download_file
+libswupd.so.2:swupd_download_file_complete
+libswupd.so.2:swupd_download_file_start
 libswupd.so.2:swupd_init
 libswupd.so.2:swupd_query_url_content_size
 libswupd.so.2:swupd_rm
