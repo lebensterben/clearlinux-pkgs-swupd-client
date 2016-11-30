@@ -101,6 +101,7 @@ libswupd.so.2:swupd_download_file_start
 libswupd.so.2:swupd_init
 libswupd.so.2:swupd_query_url_content_size
 libswupd.so.2:swupd_rm
+libswupd.so.2:telemetry
 libswupd.so.2:terminate_signature
 libswupd.so.2:try_delta
 libswupd.so.2:unlink_all_staged_content
