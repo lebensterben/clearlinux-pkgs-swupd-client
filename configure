@@ -2,4 +2,4 @@
 --enable-signature-verification
 --with-contenturl=https://cdn.download.clearlinux.org/update
 --with-versionurl=https://download.clearlinux.org/update
---with-formatid=8
+--with-formatid=10
