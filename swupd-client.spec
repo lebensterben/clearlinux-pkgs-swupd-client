@@ -4,7 +4,7 @@
 #
 Name     : swupd-client
 Version  : 3.8.3
-Release  : 181
+Release  : 182
 URL      : https://github.com/clearlinux/swupd-client/releases/download/v3.8.3/swupd-client-3.8.3.tar.gz
 Source0  : https://github.com/clearlinux/swupd-client/releases/download/v3.8.3/swupd-client-3.8.3.tar.gz
 Source1  : swupd-client.tmpfiles
@@ -110,7 +110,7 @@ lib components for the swupd-client package.
 
 %build
 export LANG=C
-export SOURCE_DATE_EPOCH=1488368545
+export SOURCE_DATE_EPOCH=1490031945
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
@@ -133,7 +133,7 @@ export no_proxy=localhost
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1488368545
+export SOURCE_DATE_EPOCH=1490031945
 rm -rf %{buildroot}
 %make_install
 mkdir -p %{buildroot}/usr/lib/tmpfiles.d
