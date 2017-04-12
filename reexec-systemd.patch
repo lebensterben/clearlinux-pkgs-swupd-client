@@ -1,0 +1,51 @@
+diff -purN swupd-client-3.8.6/include/swupd.h swupd-client-3.8.6.new/include/swupd.h
+--- swupd-client-3.8.6/include/swupd.h	2017-04-04 18:57:41.000000000 +0000
++++ swupd-client-3.8.6.new/include/swupd.h	2017-04-12 16:19:43.747437900 +0000
+@@ -75,6 +75,7 @@ extern int update_skip;
+ extern bool update_complete;
+ extern bool need_update_boot;
+ extern bool need_update_bootloader;
++extern bool need_systemd_reexec;
+ 
+ struct update_stat {
+ 	uint64_t st_mode;
+diff -purN swupd-client-3.8.6/src/globals.c swupd-client-3.8.6.new/src/globals.c
+--- swupd-client-3.8.6/src/globals.c	2017-04-04 18:57:31.000000000 +0000
++++ swupd-client-3.8.6.new/src/globals.c	2017-04-12 16:23:48.653066059 +0000
+@@ -40,6 +40,7 @@ int update_count = 0;
+ int update_skip = 0;
+ bool need_update_boot = false;
+ bool need_update_bootloader = false;
++bool need_systemd_reexec = false;
+ bool update_complete = false;
+ #if 0
+ /* disabled unused global variables */
+diff -purN swupd-client-3.8.6/src/heuristics.c swupd-client-3.8.6.new/src/heuristics.c
+--- swupd-client-3.8.6/src/heuristics.c	2016-12-21 00:16:38.000000000 +0000
++++ swupd-client-3.8.6.new/src/heuristics.c	2017-04-12 16:21:18.815121768 +0000
+@@ -98,6 +98,10 @@ static void boot_file_heuristics(struct
+ 		need_update_boot = true;
+ 	}
+ 
++	if (strcmp(file->filename, "/usr/lib/systemd/systemd") == 0) {
++		need_systemd_reexec = true;
++	}
++
+ 	if ((strncmp(file->filename, "/usr/lib/gummiboot", 18) == 0) ||
+ 	    (strncmp(file->filename, "/usr/bin/gummiboot", 18) == 0) ||
+ 	    (strncmp(file->filename, "/usr/bin/bootctl", 16) == 0) ||
+diff -purN swupd-client-3.8.6/src/scripts.c swupd-client-3.8.6.new/src/scripts.c
+--- swupd-client-3.8.6/src/scripts.c	2017-03-04 01:38:12.000000000 +0000
++++ swupd-client-3.8.6.new/src/scripts.c	2017-04-12 16:19:08.910922937 +0000
+@@ -51,7 +51,10 @@ static void update_triggers(void)
+ {
+ 	__attribute__((unused)) int ret = 0;
+ 
+-	ret = system("/usr/bin/systemctl --no-block daemon-reload");
++	if (need_systemd_reexec) 
++		ret = system("/usr/bin/systemctl daemon-reexec");
++	
++	ret = system("/usr/bin/systemctl daemon-reload");
+ 	ret = system("/usr/bin/systemctl --no-block restart update-triggers.target");
+ }
+ 
