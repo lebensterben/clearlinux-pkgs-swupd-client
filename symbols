@@ -46,6 +46,7 @@ libswupd.so.2:init_globals
 libswupd.so.2:init_timelist
 libswupd.so.2:initialize_signature
 libswupd.so.2:install_bundles_frontend
+libswupd.so.2:is_compatible_format
 libswupd.so.2:is_directory_mounted
 libswupd.so.2:is_tracked_bundle
 libswupd.so.2:is_under_mounted_directory
@@ -70,6 +71,7 @@ libswupd.so.2:main_update
 libswupd.so.2:mk_full_filename
 libswupd.so.2:p_lockfile
 libswupd.so.2:populate_file_struct
+libswupd.so.2:print_progress
 libswupd.so.2:print_statistics
 libswupd.so.2:print_time_stats
 libswupd.so.2:read_local_bundles
