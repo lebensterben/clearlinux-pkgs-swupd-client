@@ -83,6 +83,7 @@ libswupd.so.2:remove_files_in_manifest_from_fs
 libswupd.so.2:remove_manifest_files
 libswupd.so.2:rename_all_files_to_final
 libswupd.so.2:rename_staged_file_to_final
+libswupd.so.2:required_by
 libswupd.so.2:rm_bundle_file
 libswupd.so.2:rm_staging_dir_contents
 libswupd.so.2:run_preupdate_scripts
@@ -98,6 +99,8 @@ libswupd.so.2:set_path_prefix
 libswupd.so.2:set_state_dir
 libswupd.so.2:set_subscription_versions
 libswupd.so.2:set_version_url
+libswupd.so.2:show_bundle_reqd_by
+libswupd.so.2:show_included_bundles
 libswupd.so.2:start_full_download
 libswupd.so.2:string_in_list
 libswupd.so.2:string_or_die
