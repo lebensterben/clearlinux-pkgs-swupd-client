@@ -47,6 +47,7 @@ libswupd.so.2:init_timelist
 libswupd.so.2:initialize_signature
 libswupd.so.2:install_bundles_frontend
 libswupd.so.2:is_compatible_format
+libswupd.so.2:is_current_version
 libswupd.so.2:is_directory_mounted
 libswupd.so.2:is_tracked_bundle
 libswupd.so.2:is_under_mounted_directory
