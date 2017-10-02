@@ -1,7 +1,6 @@
 libswupd.so.2:add_included_manifests
 libswupd.so.2:add_subscriptions
 libswupd.so.2:apply_heuristics
-libswupd.so.2:check_network
 libswupd.so.2:check_root
 libswupd.so.2:check_versions
 libswupd.so.2:clean_curl_multi_queue
@@ -95,7 +94,6 @@ libswupd.so.2:search_file_in_manifest
 libswupd.so.2:set_cert_path
 libswupd.so.2:set_content_url
 libswupd.so.2:set_format_string
-libswupd.so.2:set_local_download
 libswupd.so.2:set_path_prefix
 libswupd.so.2:set_state_dir
 libswupd.so.2:set_subscription_versions
@@ -105,13 +103,13 @@ libswupd.so.2:show_included_bundles
 libswupd.so.2:start_full_download
 libswupd.so.2:string_in_list
 libswupd.so.2:string_or_die
+libswupd.so.2:swupd_curl_check_network
 libswupd.so.2:swupd_curl_cleanup
 libswupd.so.2:swupd_curl_get_file
 libswupd.so.2:swupd_curl_init
 libswupd.so.2:swupd_curl_set_basic_options
 libswupd.so.2:swupd_curl_set_current_version
 libswupd.so.2:swupd_curl_set_requested_version
-libswupd.so.2:swupd_curl_test_resume
 libswupd.so.2:swupd_deinit
 libswupd.so.2:swupd_download_file_complete
 libswupd.so.2:swupd_download_file_start
