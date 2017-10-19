@@ -69,6 +69,7 @@ libswupd.so.2:load_manifest
 libswupd.so.2:load_mom
 libswupd.so.2:main_update
 libswupd.so.2:mk_full_filename
+libswupd.so.2:on_new_format
 libswupd.so.2:p_lockfile
 libswupd.so.2:populate_file_struct
 libswupd.so.2:print_progress
