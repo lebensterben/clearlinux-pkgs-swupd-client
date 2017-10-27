@@ -4,7 +4,7 @@
 #
 Name     : swupd-client
 Version  : 3.12.6
-Release  : 226
+Release  : 227
 URL      : https://github.com/clearlinux/swupd-client/releases/download/v3.12.6/swupd-client-3.12.6.tar.gz
 Source0  : https://github.com/clearlinux/swupd-client/releases/download/v3.12.6/swupd-client-3.12.6.tar.gz
 Source1  : swupd-client.tmpfiles
@@ -25,6 +25,7 @@ BuildRequires : pkgconfig(libcurl)
 BuildRequires : pkgconfig(liblzma)
 BuildRequires : pkgconfig(zlib)
 BuildRequires : systemd-dev
+Patch1: 0001-More-a-constant-time-check-before-a-O-n-check.patch
 
 %description
 The swupd-client package provides a reference implementation of a software
@@ -106,13 +107,14 @@ lib components for the swupd-client package.
 
 %prep
 %setup -q -n swupd-client-3.12.6
+%patch1 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1508434569
+export SOURCE_DATE_EPOCH=1509066936
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
@@ -136,7 +138,7 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1508434569
+export SOURCE_DATE_EPOCH=1509066936
 rm -rf %{buildroot}
 %make_install
 mkdir -p %{buildroot}/usr/lib/tmpfiles.d
