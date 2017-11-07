@@ -2,5 +2,5 @@
 --enable-signature-verification
 --with-contenturl=https://cdn.download.clearlinux.org/update
 --with-versionurl=https://download.clearlinux.org/update
---with-formatid=20
+--with-formatid=21
 --with-fallback-capaths=/usr/share/ca-certs/.prebuilt-store/anchors
