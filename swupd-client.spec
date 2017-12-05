@@ -4,7 +4,7 @@
 #
 Name     : swupd-client
 Version  : 3.14.1
-Release  : 236
+Release  : 237
 URL      : https://github.com/clearlinux/swupd-client/releases/download/v3.14.1/swupd-client-3.14.1.tar.gz
 Source0  : https://github.com/clearlinux/swupd-client/releases/download/v3.14.1/swupd-client-3.14.1.tar.gz
 Source1  : swupd-client.tmpfiles
@@ -113,7 +113,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1512155092
+export SOURCE_DATE_EPOCH=1512485045
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
@@ -125,7 +125,7 @@ export CXXFLAGS="$CXXFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -f
 --enable-signature-verification \
 --with-contenturl=https://cdn.download.clearlinux.org/update \
 --with-versionurl=https://download.clearlinux.org/update \
---with-formatid=21 \
+--with-formatid=22 \
 --with-fallback-capaths=/usr/share/ca-certs/.prebuilt-store/anchors \
 --with-post-update=/usr/bin/update-helper
 make V=1  %{?_smp_mflags}
@@ -138,7 +138,7 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1512155092
+export SOURCE_DATE_EPOCH=1512485045
 rm -rf %{buildroot}
 %make_install
 mkdir -p %{buildroot}/usr/lib/tmpfiles.d
