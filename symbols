@@ -33,6 +33,7 @@ libswupd.so.2:free_list_file
 libswupd.so.2:free_manifest
 libswupd.so.2:free_manifest_array
 libswupd.so.2:free_manifest_data
+libswupd.so.2:free_string
 libswupd.so.2:free_subscriptions
 libswupd.so.2:full_download
 libswupd.so.2:get_current_version
