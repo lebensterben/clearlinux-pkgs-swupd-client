@@ -69,6 +69,7 @@ libswupd.so.2:list_free_list_and_data
 libswupd.so.2:list_head
 libswupd.so.2:list_installable_bundles
 libswupd.so.2:list_len
+libswupd.so.2:list_local_bundles
 libswupd.so.2:list_prepend_data
 libswupd.so.2:list_sort
 libswupd.so.2:list_tail
@@ -84,7 +85,6 @@ libswupd.so.2:populate_file_struct
 libswupd.so.2:print_progress
 libswupd.so.2:print_statistics
 libswupd.so.2:print_time_stats
-libswupd.so.2:read_local_bundles
 libswupd.so.2:read_mix_version_file
 libswupd.so.2:read_subscriptions
 libswupd.so.2:read_versions
