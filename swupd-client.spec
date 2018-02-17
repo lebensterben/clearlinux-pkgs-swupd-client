@@ -6,7 +6,7 @@
 #
 Name     : swupd-client
 Version  : 3.14.6
-Release  : 247
+Release  : 248
 URL      : https://github.com/clearlinux/swupd-client/releases/download/v3.14.6/swupd-client-3.14.6.tar.gz
 Source0  : https://github.com/clearlinux/swupd-client/releases/download/v3.14.6/swupd-client-3.14.6.tar.gz
 Source1  : swupd-client.tmpfiles
@@ -29,6 +29,7 @@ BuildRequires : pkgconfig(libcurl)
 BuildRequires : pkgconfig(liblzma)
 BuildRequires : pkgconfig(zlib)
 BuildRequires : systemd-dev
+Patch1: search.patch
 
 %description
 The swupd-client package provides a reference implementation of a software
@@ -110,13 +111,14 @@ lib components for the swupd-client package.
 
 %prep
 %setup -q -n swupd-client-3.14.6
+%patch1 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1518723792
+export SOURCE_DATE_EPOCH=1518895630
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
@@ -141,7 +143,7 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1518723792
+export SOURCE_DATE_EPOCH=1518895630
 rm -rf %{buildroot}
 %make_install
 mkdir -p %{buildroot}/usr/lib/tmpfiles.d
