@@ -63,6 +63,7 @@ libswupd.so.2:link_submanifests
 libswupd.so.2:list_append_data
 libswupd.so.2:list_clone
 libswupd.so.2:list_concat
+libswupd.so.2:list_deep_clone_strs
 libswupd.so.2:list_free_item
 libswupd.so.2:list_free_list
 libswupd.so.2:list_free_list_and_data
