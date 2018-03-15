@@ -5,12 +5,12 @@
 # Source0 file verified with key 0x8904179958F1BB67 (matthew.johnson@intel.com)
 #
 Name     : swupd-client
-Version  : 3.15.1
-Release  : 252
-URL      : https://github.com/clearlinux/swupd-client/releases/download/v3.15.1/swupd-client-3.15.1.tar.gz
-Source0  : https://github.com/clearlinux/swupd-client/releases/download/v3.15.1/swupd-client-3.15.1.tar.gz
+Version  : 3.15.2
+Release  : 253
+URL      : https://github.com/clearlinux/swupd-client/releases/download/v3.15.2/swupd-client-3.15.2.tar.gz
+Source0  : https://github.com/clearlinux/swupd-client/releases/download/v3.15.2/swupd-client-3.15.2.tar.gz
 Source1  : swupd-client.tmpfiles
-Source99 : https://github.com/clearlinux/swupd-client/releases/download/v3.15.1/swupd-client-3.15.1.tar.gz.asc
+Source99 : https://github.com/clearlinux/swupd-client/releases/download/v3.15.2/swupd-client-3.15.2.tar.gz.asc
 Summary  : No detailed summary available
 Group    : Development/Tools
 License  : GPL-2.0 GPL-2.0+
@@ -109,14 +109,14 @@ lib components for the swupd-client package.
 
 
 %prep
-%setup -q -n swupd-client-3.15.1
+%setup -q -n swupd-client-3.15.2
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1520453908
+export SOURCE_DATE_EPOCH=1521128382
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
@@ -141,7 +141,7 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1520453908
+export SOURCE_DATE_EPOCH=1521128382
 rm -rf %{buildroot}
 %make_install
 mkdir -p %{buildroot}/usr/lib/tmpfiles.d
