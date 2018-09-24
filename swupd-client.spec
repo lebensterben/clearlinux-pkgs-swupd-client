@@ -4,7 +4,7 @@
 #
 Name     : swupd-client
 Version  : 3.17.14
-Release  : 275
+Release  : 276
 URL      : https://github.com/clearlinux/swupd-client/releases/download/v3.17.14/swupd-client-3.17.14.tar.gz
 Source0  : https://github.com/clearlinux/swupd-client/releases/download/v3.17.14/swupd-client-3.17.14.tar.gz
 Source1  : swupd-client.tmpfiles
@@ -15,8 +15,8 @@ Requires: swupd-client-bin
 Requires: swupd-client-config
 Requires: swupd-client-autostart
 Requires: swupd-client-data
-Requires: swupd-client-license
 Requires: swupd-client-man
+Requires: swupd-client-license
 BuildRequires : bzip2-dev
 BuildRequires : pkgconfig(bsdiff)
 BuildRequires : pkgconfig(check)
@@ -45,10 +45,10 @@ autostart components for the swupd-client package.
 %package bin
 Summary: bin components for the swupd-client package.
 Group: Binaries
-Requires: swupd-client-data
-Requires: swupd-client-config
-Requires: swupd-client-license
-Requires: swupd-client-man
+Requires: swupd-client-data = %{version}-%{release}
+Requires: swupd-client-config = %{version}-%{release}
+Requires: swupd-client-license = %{version}-%{release}
+Requires: swupd-client-man = %{version}-%{release}
 
 %description bin
 bin components for the swupd-client package.
@@ -102,7 +102,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1536795598
+export SOURCE_DATE_EPOCH=1537829783
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
@@ -127,10 +127,10 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1536795598
+export SOURCE_DATE_EPOCH=1537829783
 rm -rf %{buildroot}
-mkdir -p %{buildroot}/usr/share/doc/swupd-client
-cp COPYING %{buildroot}/usr/share/doc/swupd-client/COPYING
+mkdir -p %{buildroot}/usr/share/package-licenses/swupd-client
+cp COPYING %{buildroot}/usr/share/package-licenses/swupd-client/COPYING
 %make_install
 mkdir -p %{buildroot}/usr/lib/tmpfiles.d
 install -m 0644 %{SOURCE1} %{buildroot}/usr/lib/tmpfiles.d/swupd-client.conf
@@ -173,7 +173,7 @@ ln -sf ../swupd-update.timer %{buildroot}/usr/lib/systemd/system/multi-user.targ
 
 %files license
 %defattr(-,root,root,-)
-/usr/share/doc/swupd-client/COPYING
+/usr/share/package-licenses/swupd-client/COPYING
 
 %files man
 %defattr(-,root,root,-)
