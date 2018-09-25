@@ -4,7 +4,7 @@
 #
 Name     : swupd-client
 Version  : 3.17.14
-Release  : 276
+Release  : 277
 URL      : https://github.com/clearlinux/swupd-client/releases/download/v3.17.14/swupd-client-3.17.14.tar.gz
 Source0  : https://github.com/clearlinux/swupd-client/releases/download/v3.17.14/swupd-client-3.17.14.tar.gz
 Source1  : swupd-client.tmpfiles
@@ -114,7 +114,7 @@ export CXXFLAGS="$CXXFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -f
 --enable-signature-verification \
 --with-contenturl=https://cdn.download.clearlinux.org/update \
 --with-versionurl=https://download.clearlinux.org/update \
---with-formatid=25 \
+--with-formatid=26
 --with-fallback-capaths=/usr/share/ca-certs/.prebuilt-store/anchors \
 --with-post-update=/usr/bin/update-helper
 make  %{?_smp_mflags}
