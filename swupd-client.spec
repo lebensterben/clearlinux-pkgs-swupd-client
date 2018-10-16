@@ -114,7 +114,7 @@ export CXXFLAGS="$CXXFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -f
 --enable-signature-verification \
 --with-contenturl=https://cdn.download.clearlinux.org/update \
 --with-versionurl=https://download.clearlinux.org/update \
---with-formatid=25 \
+--with-formatid=26 \
 --with-fallback-capaths=/usr/share/ca-certs/.prebuilt-store/anchors \
 --with-post-update=/usr/bin/update-helper
 make  %{?_smp_mflags}
