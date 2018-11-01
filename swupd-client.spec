@@ -4,7 +4,7 @@
 #
 Name     : swupd-client
 Version  : 3.18.3
-Release  : 289
+Release  : 290
 URL      : https://github.com/clearlinux/swupd-client/releases/download/v3.18.3/swupd-client-3.18.3.tar.gz
 Source0  : https://github.com/clearlinux/swupd-client/releases/download/v3.18.3/swupd-client-3.18.3.tar.gz
 Source1  : swupd-client.tmpfiles
@@ -112,7 +112,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1541110823
+export SOURCE_DATE_EPOCH=1541113396
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
@@ -122,8 +122,8 @@ export FFLAGS="$CFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -fno-m
 export CXXFLAGS="$CXXFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
 %configure --disable-static --disable-tests \
 --enable-signature-verification \
---with-contenturl=https://cdn.download.clearlinux.org/update \
---with-versionurl=https://cdn.download.clearlinux.org/update \
+--with-contenturl=https://cdn.download.clearlinux.org/update/ \
+--with-versionurl=https://cdn.download.clearlinux.org/update/ \
 --with-formatid=26 \
 --with-fallback-capaths=/usr/share/ca-certs/.prebuilt-store/anchors \
 --with-post-update=/usr/bin/update-helper
@@ -137,7 +137,7 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1541110823
+export SOURCE_DATE_EPOCH=1541113396
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/swupd-client
 cp COPYING %{buildroot}/usr/share/package-licenses/swupd-client/COPYING
