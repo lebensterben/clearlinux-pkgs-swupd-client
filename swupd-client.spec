@@ -4,7 +4,7 @@
 #
 Name     : swupd-client
 Version  : 3.18.5
-Release  : 295
+Release  : 296
 URL      : https://github.com/clearlinux/swupd-client/releases/download/v3.18.5/swupd-client-3.18.5.tar.gz
 Source0  : https://github.com/clearlinux/swupd-client/releases/download/v3.18.5/swupd-client-3.18.5.tar.gz
 Source1  : swupd-client.tmpfiles
