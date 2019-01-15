@@ -4,7 +4,7 @@
 #
 Name     : swupd-client
 Version  : 3.18.5
-Release  : 297
+Release  : 298
 URL      : https://github.com/clearlinux/swupd-client/releases/download/v3.18.5/swupd-client-3.18.5.tar.gz
 Source0  : https://github.com/clearlinux/swupd-client/releases/download/v3.18.5/swupd-client-3.18.5.tar.gz
 Source1  : swupd-client.tmpfiles
@@ -27,7 +27,8 @@ BuildRequires : pkgconfig(libcurl)
 BuildRequires : pkgconfig(liblzma)
 BuildRequires : pkgconfig(zlib)
 BuildRequires : systemd-dev
-Patch1: improve-search.patch
+Patch1: 0001-Add-polkit-files.patch
+Patch2: improve-search.patch
 
 %description
 The swupd-client package provides a reference implementation of a software
@@ -108,13 +109,14 @@ services components for the swupd-client package.
 %prep
 %setup -q -n swupd-client-3.18.5
 %patch1 -p1
+%patch2 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1547410184
+export SOURCE_DATE_EPOCH=1547591021
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
@@ -139,7 +141,7 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1547410184
+export SOURCE_DATE_EPOCH=1547591021
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/swupd-client
 cp COPYING %{buildroot}/usr/share/package-licenses/swupd-client/COPYING
@@ -151,6 +153,10 @@ mkdir -p %{buildroot}/usr/share/defaults/etc/profile.d/
 install -m644 swupd.bash %{buildroot}/usr/share/defaults/etc/profile.d/50-swupd.bash
 mkdir -p %{buildroot}/usr/lib/systemd/system/multi-user.target.wants/
 ln -sf ../swupd-update.timer %{buildroot}/usr/lib/systemd/system/multi-user.target.wants/swupd-update.timer
+mkdir -p %{buildroot}/usr/share/polkit-1/actions
+mkdir -p %{buildroot}/usr/share/polkit-1/rules.d
+install -m644 data/org.clearlinux.swupd.policy %{buildroot}/usr/share/polkit-1/actions/
+install -m644 data/org.clearlinux.swupd.rules %{buildroot}/usr/share/polkit-1/rules.d/
 ## install_append end
 
 %files
@@ -172,6 +178,8 @@ ln -sf ../swupd-update.timer %{buildroot}/usr/lib/systemd/system/multi-user.targ
 %files data
 %defattr(-,root,root,-)
 /usr/share/defaults/etc/profile.d/50-swupd.bash
+/usr/share/polkit-1/actions/org.clearlinux.swupd.policy
+/usr/share/polkit-1/rules.d/org.clearlinux.swupd.rules
 
 %files extras
 %defattr(-,root,root,-)
