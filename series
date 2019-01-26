@@ -1,2 +1,4 @@
 0001-Add-polkit-files.patch
 improve-search.patch
+0002-verify-Enable-verifying-a-subset-of-bundles.patch
+0003-staging-Ensure-staging-doesn-t-escape-path_prefix.patch

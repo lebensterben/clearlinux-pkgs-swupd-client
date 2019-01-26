@@ -4,7 +4,7 @@
 #
 Name     : swupd-client
 Version  : 3.18.7
-Release  : 299
+Release  : 301
 URL      : https://github.com/clearlinux/swupd-client/releases/download/v3.18.7/swupd-client-3.18.7.tar.gz
 Source0  : https://github.com/clearlinux/swupd-client/releases/download/v3.18.7/swupd-client-3.18.7.tar.gz
 Source1  : swupd-client.tmpfiles
@@ -18,8 +18,15 @@ Requires: swupd-client-data = %{version}-%{release}
 Requires: swupd-client-license = %{version}-%{release}
 Requires: swupd-client-man = %{version}-%{release}
 Requires: swupd-client-services = %{version}-%{release}
+BuildRequires : automake
+BuildRequires : automake-dev
 BuildRequires : bzip2-dev
 BuildRequires : docutils
+BuildRequires : gettext-bin
+BuildRequires : libtool
+BuildRequires : libtool-dev
+BuildRequires : m4
+BuildRequires : pkg-config-dev
 BuildRequires : pkgconfig(bsdiff)
 BuildRequires : pkgconfig(check)
 BuildRequires : pkgconfig(libarchive)
@@ -30,6 +37,8 @@ BuildRequires : pkgconfig(zlib)
 BuildRequires : systemd-dev
 Patch1: 0001-Add-polkit-files.patch
 Patch2: improve-search.patch
+Patch3: 0002-verify-Enable-verifying-a-subset-of-bundles.patch
+Patch4: 0003-staging-Ensure-staging-doesn-t-escape-path_prefix.patch
 
 %description
 The swupd-client package provides a reference implementation of a software
@@ -111,13 +120,15 @@ services components for the swupd-client package.
 %setup -q -n swupd-client-3.18.7
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
+%patch4 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1547695013
+export SOURCE_DATE_EPOCH=1548543257
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
@@ -125,7 +136,7 @@ export CFLAGS="$CFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -fno-m
 export FCFLAGS="$CFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
 export FFLAGS="$CFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
 export CXXFLAGS="$CXXFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
-%configure --disable-static --disable-tests \
+%reconfigure --disable-static --disable-tests \
 --enable-signature-verification \
 --with-contenturl=https://cdn.download.clearlinux.org/update/ \
 --with-versionurl=https://cdn.download.clearlinux.org/update/ \
@@ -142,7 +153,7 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1547695013
+export SOURCE_DATE_EPOCH=1548543257
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/swupd-client
 cp COPYING %{buildroot}/usr/share/package-licenses/swupd-client/COPYING
