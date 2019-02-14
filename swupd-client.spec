@@ -4,7 +4,7 @@
 #
 Name     : swupd-client
 Version  : 3.19.0
-Release  : 302
+Release  : 303
 URL      : https://github.com/clearlinux/swupd-client/releases/download/v3.19.0/swupd-client-3.19.0.tar.gz
 Source0  : https://github.com/clearlinux/swupd-client/releases/download/v3.19.0/swupd-client-3.19.0.tar.gz
 Source1  : swupd-client.tmpfiles
