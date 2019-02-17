@@ -9,3 +9,37 @@
  
  /* bundle_result contains the information to print along with
   * the internal relevancy score used to sort the output */
+--- swupd-client-3.19.0/src/search.c~	2019-02-14 05:23:36.000000000 +0000
++++ swupd-client-3.19.0/src/search.c	2019-02-17 20:54:41.701233959 +0000
+@@ -811,6 +811,19 @@
+ 	return ret;
+ }
+ 
++int try_local_search(void)
++{
++	int ret = 1;
++	char *cmd = NULL;
++	if (access("/usr/bin/swupd-search", X_OK) != 0)
++		return 1;
++	asprintf(&cmd,"/usr/bin/swupd-search -q %s", search_string);
++	if (cmd)
++		ret = system(cmd);
++	free(cmd);
++	return ret;
++}
++
+ enum swupd_code search_main(int argc, char **argv)
+ {
+ 	int ret = SWUPD_OK;
+--- swupd-client-3.19.0/src/search.c~	2019-02-17 20:54:41.000000000 +0000
++++ swupd-client-3.19.0/src/search.c	2019-02-17 20:55:23.237233381 +0000
+@@ -832,6 +832,9 @@
+ 		return SWUPD_INVALID_OPTION;
+ 	}
+ 
++	if (try_local_search() == 0)
++		return 0;
++
+ 	ret = swupd_init();
+ 	if (ret != 0) {
+ 		fprintf(stderr, "Failed swupd initialization, exiting now.\n");
