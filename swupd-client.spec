@@ -4,7 +4,7 @@
 #
 Name     : swupd-client
 Version  : 3.19.0
-Release  : 304
+Release  : 305
 URL      : https://github.com/clearlinux/swupd-client/releases/download/v3.19.0/swupd-client-3.19.0.tar.gz
 Source0  : https://github.com/clearlinux/swupd-client/releases/download/v3.19.0/swupd-client-3.19.0.tar.gz
 Source1  : swupd-client.tmpfiles
@@ -29,7 +29,8 @@ BuildRequires : pkgconfig(liblzma)
 BuildRequires : pkgconfig(zlib)
 BuildRequires : systemd-dev
 Patch1: 0001-Add-polkit-files.patch
-Patch2: improve-search.patch
+Patch2: 0002-thread_pool-Run-tasks-in-same-thread-if-threads-are-.patch
+Patch3: improve-search.patch
 
 %description
 The swupd-client package provides a reference implementation of a software
@@ -52,7 +53,6 @@ Group: Binaries
 Requires: swupd-client-data = %{version}-%{release}
 Requires: swupd-client-config = %{version}-%{release}
 Requires: swupd-client-license = %{version}-%{release}
-Requires: swupd-client-man = %{version}-%{release}
 Requires: swupd-client-services = %{version}-%{release}
 
 %description bin
@@ -111,13 +111,14 @@ services components for the swupd-client package.
 %setup -q -n swupd-client-3.19.0
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1550437086
+export SOURCE_DATE_EPOCH=1553031238
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
@@ -142,7 +143,7 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1550437086
+export SOURCE_DATE_EPOCH=1553031238
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/swupd-client
 cp COPYING %{buildroot}/usr/share/package-licenses/swupd-client/COPYING

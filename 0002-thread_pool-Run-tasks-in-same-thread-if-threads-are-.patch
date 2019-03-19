@@ -1,0 +1,177 @@
+From e41c33ce4d815a7df496c1ba42121c25352dbf54 Mon Sep 17 00:00:00 2001
+From: Otavio Pontes <otavio.pontes@intel.com>
+Date: Tue, 5 Mar 2019 13:12:27 -0800
+Subject: [PATCH] thread_pool: Run tasks in same thread if threads are not
+ supported
+
+If we have any errors on pipe2 syscall or in pthread creation run tasks
+in main thread. Also set the max downloads in parallel to 1 to avoid timeouts
+
+Signed-off-by: Otavio Pontes <otavio.pontes@intel.com>
+---
+ src/curl_async.c      | 19 +++++++++++++----
+ src/lib/thread_pool.c | 48 +++++++++++++++++++++++++++++++++++++++----
+ src/lib/thread_pool.h |  5 +++++
+ 3 files changed, 64 insertions(+), 8 deletions(-)
+
+diff --git a/src/curl_async.c b/src/curl_async.c
+index 76ef4ab7..31e05966 100644
+--- a/src/curl_async.c
++++ b/src/curl_async.c
+@@ -186,6 +186,16 @@ void *swupd_curl_parallel_download_start(size_t max_xfer)
+ 	/* Libarchive is not thread safe when using the archive_disk_write api.
+ 	 * So for now, use only 1 thread to handle untar/extraction */
+ 	h->thpool = tp_start(1);
++	if (!h->thpool) {
++		h->thpool = tp_start(0);
++		if (!h->thpool) {
++			error("Unable to create a thread pool");
++			goto error;
++		}
++
++		warn("Curl - Unable to create a thread pool - downloading files synchronously\n");
++		max_xfer = 0;
++	}
+ 
+ 	curl_multi_setopt(h->mcurl, CURLMOPT_PIPELINING, CURLPIPE_MULTIPLEX | CURLPIPE_HTTP1);
+ 
+@@ -513,10 +523,11 @@ int swupd_curl_parallel_download_end(void *handle, int *num_downloads)
+ 	while (poll_fewer_than(h, 0, 0) == 0 && retry) {
+ 		retry = false;
+ 
+-		/* Wait for all threads to complete, re-init pool to handle extra downloads
+-		 * This should be replaced by a tp_wait() function once available. */
+-		tp_complete(h->thpool);
+-		h->thpool = tp_start(1);
++		/* Wait for all threads to complete */
++		if (tp_get_num_threads(h->thpool) > 0) {
++			tp_complete(h->thpool);
++			h->thpool = tp_start(1);
++		}
+ 
+ 		/* Check return values from threads, add failed items to h->failed list to retry */
+ 		HASHMAP_FOREACH(h->curl_hashmap, i, l, file)
+diff --git a/src/lib/thread_pool.c b/src/lib/thread_pool.c
+index 0055c610..20328e9d 100644
+--- a/src/lib/thread_pool.c
++++ b/src/lib/thread_pool.c
+@@ -29,6 +29,7 @@
+ #include <string.h>
+ #include <unistd.h>
+ 
++#include "log.h"
+ #include "macros.h"
+ #include "thread_pool.h"
+ 
+@@ -69,8 +70,8 @@ static void *thread_run(void *data)
+ 				// Not an error, we can continue
+ 				continue;
+ 			}
+-			fprintf(stderr, "Error - Thread communication failed: %d - %s\n",
+-				errno, strerror(errno));
++			error("Thread communication failed: %d - %s\n",
++			      errno, strerror(errno));
+ 			return NULL;
+ 		}
+ 
+@@ -85,11 +86,24 @@ struct tp *tp_start(int num_threads)
+ 	int i;
+ 	struct tp *tp;
+ 
++	if (num_threads < 0) {
++		error("Number of threads (%d) shouldn't be negative\n", num_threads);
++		return NULL;
++	}
++
+ 	tp = calloc(1, sizeof(struct tp) + num_threads * sizeof(pthread_t *));
+ 	ON_NULL_ABORT(tp);
+ 
+ 	tp->num_threads = num_threads;
++	if (num_threads == 0) {
++		//We don't need to create threads
++		return tp;
++	}
++
++	// Create threads communication
+ 	if (pipe2(tp->pipe_fds, O_DIRECT | O_CLOEXEC) < 0) {
++		debug("No support for pipe2(..., O_DIRECT | O_CLOEXEC) syscall\n");
++		debug("Error %d - %s\n", errno, strerror(errno));
+ 		goto error;
+ 	}
+ 
+@@ -117,6 +131,13 @@ int tp_task_schedule(struct tp *tp, tp_task_run_t run, void *data)
+ 	int r = -1;
+ 	struct task task;
+ 
++	if (tp->num_threads == 0) {
++		// Run task
++		run(data);
++		return 0;
++	}
++
++	// Use threads
+ 	task.run = run;
+ 	task.data = data;
+ 
+@@ -127,8 +148,8 @@ int tp_task_schedule(struct tp *tp, tp_task_run_t run, void *data)
+ 				// Not an error, we can continue
+ 				continue;
+ 			}
+-			fprintf(stderr, "Error: thread pool task scheduling failed: %d - %s",
+-				errno, strerror(errno));
++			error("Thread pool task scheduling failed: %d - %s\n",
++			      errno, strerror(errno));
+ 			return r;
+ 		}
+ 	}
+@@ -139,6 +160,13 @@ int tp_task_schedule(struct tp *tp, tp_task_run_t run, void *data)
+ void tp_complete(struct tp *tp)
+ {
+ 	int i;
++	if (!tp) {
++		return;
++	}
++
++	if (tp->num_threads == 0) {
++		goto free_tp;
++	}
+ 
+ 	// Close pipe so threads will get an EOF when all tasks are completed
+ 	close(tp->pipe_fds[1]);
+@@ -148,5 +176,17 @@ void tp_complete(struct tp *tp)
+ 	}
+ 
+ 	close(tp->pipe_fds[0]);
++
++free_tp:
+ 	free(tp);
+ }
++
++int tp_get_num_threads(struct tp *tp)
++{
++	if (!tp) {
++		error("Invalid thread pool: NULL\n");
++		return 0;
++	}
++
++	return tp->num_threads;
++}
+diff --git a/src/lib/thread_pool.h b/src/lib/thread_pool.h
+index d06e7d5b..cc896a38 100644
+--- a/src/lib/thread_pool.h
++++ b/src/lib/thread_pool.h
+@@ -37,6 +37,11 @@ int tp_task_schedule(struct tp *tp, tp_task_run_t run, void *data);
+  */
+ void tp_complete(struct tp *tp);
+ 
++/*
++ * Get the number of threads created by this thread pool.
++ */
++int tp_get_num_threads(struct tp *tp);
++
+ //TODO: Implement a tp_wait() function
+ 
+ #endif
+-- 
+2.20.1
+

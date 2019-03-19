@@ -1,2 +1,3 @@
 0001-Add-polkit-files.patch
+0002-thread_pool-Run-tasks-in-same-thread-if-threads-are-.patch
 improve-search.patch
