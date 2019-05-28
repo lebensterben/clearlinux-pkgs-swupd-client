@@ -4,16 +4,16 @@
 #
 Name     : swupd-client
 Version  : 3.19.0
-Release  : 307
+Release  : 308
 URL      : https://github.com/clearlinux/swupd-client/releases/download/v3.19.0/swupd-client-3.19.0.tar.gz
 Source0  : https://github.com/clearlinux/swupd-client/releases/download/v3.19.0/swupd-client-3.19.0.tar.gz
-Source1  : swupd-client.tmpfiles
+Source1  : swupd-cleanup.service
+Source2  : swupd-cleanup.timer
 Summary  : No detailed summary available
 Group    : Development/Tools
 License  : GPL-2.0 GPL-2.0+
 Requires: swupd-client-autostart = %{version}-%{release}
 Requires: swupd-client-bin = %{version}-%{release}
-Requires: swupd-client-config = %{version}-%{release}
 Requires: swupd-client-data = %{version}-%{release}
 Requires: swupd-client-license = %{version}-%{release}
 Requires: swupd-client-man = %{version}-%{release}
@@ -52,20 +52,11 @@ autostart components for the swupd-client package.
 Summary: bin components for the swupd-client package.
 Group: Binaries
 Requires: swupd-client-data = %{version}-%{release}
-Requires: swupd-client-config = %{version}-%{release}
 Requires: swupd-client-license = %{version}-%{release}
 Requires: swupd-client-services = %{version}-%{release}
 
 %description bin
 bin components for the swupd-client package.
-
-
-%package config
-Summary: config components for the swupd-client package.
-Group: Default
-
-%description config
-config components for the swupd-client package.
 
 
 %package data
@@ -112,7 +103,8 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1556549565
+export SOURCE_DATE_EPOCH=1559014107
+export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
@@ -137,18 +129,21 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1556549565
+export SOURCE_DATE_EPOCH=1559014107
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/swupd-client
 cp COPYING %{buildroot}/usr/share/package-licenses/swupd-client/COPYING
 %make_install
-mkdir -p %{buildroot}/usr/lib/tmpfiles.d
-install -m 0644 %{SOURCE1} %{buildroot}/usr/lib/tmpfiles.d/swupd-client.conf
+mkdir -p %{buildroot}/usr/lib/systemd/system
+install -m 0644 %{SOURCE1} %{buildroot}/usr/lib/systemd/system/swupd-cleanup.service
+install -m 0644 %{SOURCE2} %{buildroot}/usr/lib/systemd/system/swupd-cleanup.timer
 ## install_append content
 mkdir -p %{buildroot}/usr/share/defaults/etc/profile.d/
 install -m644 swupd.bash %{buildroot}/usr/share/defaults/etc/profile.d/50-swupd.bash
 mkdir -p %{buildroot}/usr/lib/systemd/system/multi-user.target.wants/
 ln -sf ../swupd-update.timer %{buildroot}/usr/lib/systemd/system/multi-user.target.wants/swupd-update.timer
+mkdir -p %{buildroot}/usr/lib/systemd/system/timers.target.wants/
+ln -sf ../swupd-cleanup.timer %{buildroot}/usr/lib/systemd/system/timers.target.wants/swupd-cleanup.timer
 mkdir -p %{buildroot}/usr/share/polkit-1/actions
 mkdir -p %{buildroot}/usr/share/polkit-1/rules.d
 install -m644 data/org.clearlinux.swupd.policy %{buildroot}/usr/share/polkit-1/actions/
@@ -161,15 +156,12 @@ install -m644 data/org.clearlinux.swupd.rules %{buildroot}/usr/share/polkit-1/ru
 %files autostart
 %defattr(-,root,root,-)
 /usr/lib/systemd/system/multi-user.target.wants/swupd-update.timer
+/usr/lib/systemd/system/timers.target.wants/swupd-cleanup.timer
 
 %files bin
 %defattr(-,root,root,-)
 /usr/bin/swupd
 /usr/bin/verifytime
-
-%files config
-%defattr(-,root,root,-)
-/usr/lib/tmpfiles.d/swupd-client.conf
 
 %files data
 %defattr(-,root,root,-)
@@ -196,6 +188,9 @@ install -m644 data/org.clearlinux.swupd.rules %{buildroot}/usr/share/polkit-1/ru
 %exclude /usr/lib/systemd/system/check-update.service
 %exclude /usr/lib/systemd/system/check-update.timer
 %exclude /usr/lib/systemd/system/multi-user.target.wants/swupd-update.timer
+%exclude /usr/lib/systemd/system/timers.target.wants/swupd-cleanup.timer
+/usr/lib/systemd/system/swupd-cleanup.service
+/usr/lib/systemd/system/swupd-cleanup.timer
 /usr/lib/systemd/system/swupd-update.service
 /usr/lib/systemd/system/swupd-update.timer
 /usr/lib/systemd/system/verifytime.service
