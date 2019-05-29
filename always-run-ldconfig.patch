@@ -4,13 +4,13 @@ Until ldconfig has ran, many of the other things we want to call as triggers
 may not be able to find their libraries .... so this MUST run first
 
 
---- swupd-client-3.19.0/src/scripts.c~	2019-02-14 04:54:29.000000000 +0000
-+++ swupd-client-3.19.0/src/scripts.c	2019-04-29 14:50:45.423129891 +0000
-@@ -84,6 +84,8 @@
- 		block_flag = "";
- 	}
+--- a/src/scripts.c
++++ b/src/scripts.c
+@@ -96,6 +96,8 @@ void exec_post_update_script(bool reexec, bool block)
  
-+	ret = system("/usr/bin/ldconfig");
+ static void update_triggers(bool block)
+ {
++	system("/usr/bin/ldconfig");
 +
  	if (strlen(POST_UPDATE) == 0) {
  		/* fall back to systemd if path prefix is not the rootfs
