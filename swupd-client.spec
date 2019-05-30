@@ -4,7 +4,7 @@
 #
 Name     : swupd-client
 Version  : 3.20.0
-Release  : 309
+Release  : 310
 URL      : https://github.com/clearlinux/swupd-client/releases/download/v3.20.0/swupd-client-3.20.0.tar.gz
 Source0  : https://github.com/clearlinux/swupd-client/releases/download/v3.20.0/swupd-client-3.20.0.tar.gz
 Source1  : swupd-cleanup.service
@@ -99,7 +99,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1559107121
+export SOURCE_DATE_EPOCH=1559233656
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -112,7 +112,7 @@ export CXXFLAGS="$CXXFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -f
 --enable-signature-verification \
 --with-contenturl=https://cdn.download.clearlinux.org/update/ \
 --with-versionurl=https://cdn.download.clearlinux.org/update/ \
---with-formatid=27 \
+--with-formatid=28 \
 --with-fallback-capaths=/usr/share/ca-certs/.prebuilt-store/anchors \
 --with-post-update=/usr/bin/update-helper
 make  %{?_smp_mflags}
@@ -125,7 +125,7 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1559107121
+export SOURCE_DATE_EPOCH=1559233656
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/swupd-client
 cp COPYING %{buildroot}/usr/share/package-licenses/swupd-client/COPYING
