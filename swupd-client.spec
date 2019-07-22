@@ -4,7 +4,7 @@
 #
 Name     : swupd-client
 Version  : 3.21.0
-Release  : 311
+Release  : 312
 URL      : https://github.com/clearlinux/swupd-client/releases/download/v3.21.0/swupd-client-3.21.0.tar.gz
 Source0  : https://github.com/clearlinux/swupd-client/releases/download/v3.21.0/swupd-client-3.21.0.tar.gz
 Source1  : swupd-cleanup.service
@@ -99,7 +99,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1563247291
+export SOURCE_DATE_EPOCH=1563817182
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -125,7 +125,7 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1563247291
+export SOURCE_DATE_EPOCH=1563817182
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/swupd-client
 cp COPYING %{buildroot}/usr/share/package-licenses/swupd-client/COPYING
@@ -136,6 +136,8 @@ install -m 0644 %{SOURCE2} %{buildroot}/usr/lib/systemd/system/swupd-cleanup.tim
 ## install_append content
 mkdir -p %{buildroot}/usr/share/defaults/etc/profile.d/
 install -m644 swupd.bash %{buildroot}/usr/share/defaults/etc/profile.d/50-swupd.bash
+mkdir -p %{buildroot}/usr/share/defaults/swupd/
+install -m644 config %{buildroot}/usr/share/defaults/swupd/config
 mkdir -p %{buildroot}/usr/lib/systemd/system/multi-user.target.wants/
 ln -sf ../swupd-update.timer %{buildroot}/usr/lib/systemd/system/multi-user.target.wants/swupd-update.timer
 mkdir -p %{buildroot}/usr/lib/systemd/system/timers.target.wants/
@@ -162,6 +164,7 @@ install -m644 data/org.clearlinux.swupd.rules %{buildroot}/usr/share/polkit-1/ru
 %files data
 %defattr(-,root,root,-)
 /usr/share/defaults/etc/profile.d/50-swupd.bash
+/usr/share/defaults/swupd/config
 /usr/share/polkit-1/actions/org.clearlinux.swupd.policy
 /usr/share/polkit-1/rules.d/org.clearlinux.swupd.rules
 
