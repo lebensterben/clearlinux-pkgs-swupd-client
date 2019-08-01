@@ -1,0 +1,29 @@
+From 1528b793a2195950f0fecf6f14f48c41500564ed Mon Sep 17 00:00:00 2001
+From: Otavio Pontes <otavio.pontes@intel.com>
+Date: Thu, 1 Aug 2019 14:02:31 -0700
+Subject: [PATCH] mirror: Removing invalid ! in check connection
+
+check_connection() returns an int. We shouldn't use ! before comparing it to zero.
+If check_connection() return is zero it's a success.
+
+Signed-off-by: Otavio Pontes <otavio.pontes@intel.com>
+---
+ src/mirror.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/mirror.c b/src/mirror.c
+index d663637e..04f894a4 100644
+--- a/src/mirror.c
++++ b/src/mirror.c
+@@ -258,7 +258,7 @@ void handle_mirror_if_stale(void)
+ 	}
+ 
+ 	/* before trying to get the latest version let's make sure the central version is up */
+-	if (!content_url_is_local && !check_connection(NULL, ret_str) != 0) {
++	if (!content_url_is_local && check_connection(NULL, ret_str) != 0) {
+ 		warn("Upstream server %s not responding, cannot determine upstream version\n", ret_str);
+ 		warn("Unable to determine if the mirror is up to date\n");
+ 		goto out;
+-- 
+2.22.0
+

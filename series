@@ -1,2 +1,3 @@
 0001-Add-polkit-files.patch
 always-run-ldconfig.patch
+0001-mirror-Removing-invalid-in-check-connection.patch
