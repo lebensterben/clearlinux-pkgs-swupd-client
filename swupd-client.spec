@@ -4,7 +4,7 @@
 #
 Name     : swupd-client
 Version  : 3.21.0
-Release  : 316
+Release  : 317
 URL      : https://github.com/clearlinux/swupd-client/releases/download/v3.21.0/swupd-client-3.21.0.tar.gz
 Source0  : https://github.com/clearlinux/swupd-client/releases/download/v3.21.0/swupd-client-3.21.0.tar.gz
 Source1  : swupd-cleanup.service
@@ -101,7 +101,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1564698929
+export SOURCE_DATE_EPOCH=1565638461
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -114,7 +114,7 @@ export CXXFLAGS="$CXXFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -f
 --enable-signature-verification \
 --with-contenturl=https://cdn.download.clearlinux.org/update/ \
 --with-versionurl=https://cdn.download.clearlinux.org/update/ \
---with-formatid=28 \
+--with-formatid=29 \
 --with-fallback-capaths=/usr/share/ca-certs/.prebuilt-store/anchors \
 --with-post-update=/usr/bin/update-helper
 make  %{?_smp_mflags}
@@ -127,7 +127,7 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1564698929
+export SOURCE_DATE_EPOCH=1565638461
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/swupd-client
 cp COPYING %{buildroot}/usr/share/package-licenses/swupd-client/COPYING
@@ -135,6 +135,10 @@ cp COPYING %{buildroot}/usr/share/package-licenses/swupd-client/COPYING
 mkdir -p %{buildroot}/usr/lib/systemd/system
 install -m 0644 %{SOURCE1} %{buildroot}/usr/lib/systemd/system/swupd-cleanup.service
 install -m 0644 %{SOURCE2} %{buildroot}/usr/lib/systemd/system/swupd-cleanup.timer
+## Remove excluded files
+rm -f %{buildroot}/usr/lib/systemd/system/check-update.service
+rm -f %{buildroot}/usr/lib/systemd/system/check-update.timer
+rm -f %{buildroot}/usr/lib/systemd/system/multi-user.target.wants/check-update.timer
 ## install_append content
 mkdir -p %{buildroot}/usr/share/defaults/etc/profile.d/
 install -m644 swupd.bash %{buildroot}/usr/share/defaults/etc/profile.d/50-swupd.bash
@@ -186,8 +190,6 @@ install -m644 data/org.clearlinux.swupd.rules %{buildroot}/usr/share/polkit-1/ru
 
 %files services
 %defattr(-,root,root,-)
-%exclude /usr/lib/systemd/system/check-update.service
-%exclude /usr/lib/systemd/system/check-update.timer
 %exclude /usr/lib/systemd/system/multi-user.target.wants/swupd-update.timer
 %exclude /usr/lib/systemd/system/timers.target.wants/swupd-cleanup.timer
 /usr/lib/systemd/system/swupd-cleanup.service
