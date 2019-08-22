@@ -4,18 +4,17 @@
 #
 Name     : swupd-client
 Version  : 3.21.0
-Release  : 317
+Release  : 318
 URL      : https://github.com/clearlinux/swupd-client/releases/download/v3.21.0/swupd-client-3.21.0.tar.gz
 Source0  : https://github.com/clearlinux/swupd-client/releases/download/v3.21.0/swupd-client-3.21.0.tar.gz
 Source1  : swupd-cleanup.service
 Source2  : swupd-cleanup.timer
 Summary  : No detailed summary available
 Group    : Development/Tools
-License  : GPL-2.0 GPL-2.0+
+License  : GPL-2.0+
 Requires: swupd-client-autostart = %{version}-%{release}
 Requires: swupd-client-bin = %{version}-%{release}
 Requires: swupd-client-data = %{version}-%{release}
-Requires: swupd-client-license = %{version}-%{release}
 Requires: swupd-client-man = %{version}-%{release}
 Requires: swupd-client-services = %{version}-%{release}
 BuildRequires : bzip2-dev
@@ -51,7 +50,6 @@ autostart components for the swupd-client package.
 Summary: bin components for the swupd-client package.
 Group: Binaries
 Requires: swupd-client-data = %{version}-%{release}
-Requires: swupd-client-license = %{version}-%{release}
 Requires: swupd-client-services = %{version}-%{release}
 
 %description bin
@@ -64,14 +62,6 @@ Group: Data
 
 %description data
 data components for the swupd-client package.
-
-
-%package license
-Summary: license components for the swupd-client package.
-Group: Default
-
-%description license
-license components for the swupd-client package.
 
 
 %package man
@@ -101,7 +91,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1565638461
+export SOURCE_DATE_EPOCH=1566458171
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -127,21 +117,15 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1565638461
+export SOURCE_DATE_EPOCH=1566458171
 rm -rf %{buildroot}
-mkdir -p %{buildroot}/usr/share/package-licenses/swupd-client
-cp COPYING %{buildroot}/usr/share/package-licenses/swupd-client/COPYING
 %make_install
 mkdir -p %{buildroot}/usr/lib/systemd/system
 install -m 0644 %{SOURCE1} %{buildroot}/usr/lib/systemd/system/swupd-cleanup.service
 install -m 0644 %{SOURCE2} %{buildroot}/usr/lib/systemd/system/swupd-cleanup.timer
-## Remove excluded files
-rm -f %{buildroot}/usr/lib/systemd/system/check-update.service
-rm -f %{buildroot}/usr/lib/systemd/system/check-update.timer
-rm -f %{buildroot}/usr/lib/systemd/system/multi-user.target.wants/check-update.timer
 ## install_append content
-mkdir -p %{buildroot}/usr/share/defaults/etc/profile.d/
-install -m644 swupd.bash %{buildroot}/usr/share/defaults/etc/profile.d/50-swupd.bash
+mkdir -p %{buildroot}/usr/share/bash-completion/completions/swupd
+install -m644 swupd.bash %{buildroot}/usr/share/bash-completion/completions/swupd
 mkdir -p %{buildroot}/usr/share/defaults/swupd/
 install -m644 config %{buildroot}/usr/share/defaults/swupd/config
 mkdir -p %{buildroot}/usr/lib/systemd/system/multi-user.target.wants/
@@ -169,14 +153,10 @@ install -m644 data/org.clearlinux.swupd.rules %{buildroot}/usr/share/polkit-1/ru
 
 %files data
 %defattr(-,root,root,-)
-/usr/share/defaults/etc/profile.d/50-swupd.bash
+/usr/share/bash-completion/completions/swupd/swupd.bash
 /usr/share/defaults/swupd/config
 /usr/share/polkit-1/actions/org.clearlinux.swupd.policy
 /usr/share/polkit-1/rules.d/org.clearlinux.swupd.rules
-
-%files license
-%defattr(0644,root,root,0755)
-/usr/share/package-licenses/swupd-client/COPYING
 
 %files man
 %defattr(0644,root,root,0755)
@@ -190,6 +170,8 @@ install -m644 data/org.clearlinux.swupd.rules %{buildroot}/usr/share/polkit-1/ru
 
 %files services
 %defattr(-,root,root,-)
+%exclude /usr/lib/systemd/system/check-update.service
+%exclude /usr/lib/systemd/system/check-update.timer
 %exclude /usr/lib/systemd/system/multi-user.target.wants/swupd-update.timer
 %exclude /usr/lib/systemd/system/timers.target.wants/swupd-cleanup.timer
 /usr/lib/systemd/system/swupd-cleanup.service
